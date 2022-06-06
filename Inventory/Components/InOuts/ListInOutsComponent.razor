@@ -1,0 +1,61 @@
+﻿@using Entities
+@using Business
+
+<hr />
+<select class="form-control" @onchange="StorageChanged">
+    <option value="n">Ver Todos los Productos</option>
+    @foreach (var storage in storages)
+    {
+<option value="@storage.StorageId">@storage.StorageId</option>
+    
+    }
+</select>
+<hr />
+
+<table class="table table-hover table-bordered">
+    <thead class="table table-dark">
+        <tr>
+            <th>Referencia</th>
+            <th>Fecha</th>
+            <th>Cantidad</th>
+            <th>Es un ingreso</th>
+            <th>Producto</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inout in tempInouts)
+        {
+        <tr>
+            <td>@inout.InOutId</td>
+            <td>@inout.InOutDate</td>
+            <td>@inout.Quantity</td>
+            <td>@inout.IsInput</td>
+            <td>@inout.StorageId</td>
+            <td><a href="">Editar</a></td>
+        </tr>}
+    </tbody>
+</table>
+
+
+
+@code { List<InOutEntity> inouts = new List<InOutEntity>();
+    List<InOutEntity> tempInouts = new List<InOutEntity>();
+    List<StorageEntity> storages = new List<StorageEntity>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        inouts = B_InputOutput.InOutList();
+        tempInouts = inouts;
+        storages = B_Storage.StorageList();
+    }
+
+    private void StorageChanged(ChangeEventArgs e)
+    {
+
+        tempInouts = inouts.Where(c => c.StorageId == e.Value.ToString()).ToList();
+
+
+    } }
